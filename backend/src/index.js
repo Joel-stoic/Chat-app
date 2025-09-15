@@ -6,6 +6,7 @@ import path from "path";
 
 import { connectDB } from "./config/db.js";
 import authRoutes from "./routes/auth.routes.js";
+import messageRoutes from "./routes/message.routes.js";
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use(
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use('/api/message',messageRoutes)
 
 // Serve frontend in production
 if (process.env.NODE_ENV === "production") {
