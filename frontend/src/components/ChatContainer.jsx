@@ -35,7 +35,7 @@ const ChatContainer = () => {
 
   if (isMessagesLoading) {
     return (
-      <div className="flex-1 flex flex-col overflow-auto">
+      <div className="flex-1 flex flex-col overflow-auto bg-gradient-to-b from-base-100 to-base-200/50">
         <ChatHeader />
         <MessageSkeleton />
         <MessageInput />
@@ -44,18 +44,21 @@ const ChatContainer = () => {
   }
 
   return (
-    <div className="flex-1 flex flex-col overflow-auto">
+    <div className="flex-1 flex flex-col overflow-auto bg-gradient-to-b from-base-100 to-base-200/30">
       <ChatHeader />
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-4">
-        {messages.map((message) => (
+      <div className="flex-1 overflow-y-auto p-6 space-y-6 scrollbar-thin scrollbar-track-base-200 scrollbar-thumb-base-300">
+        {messages.map((message, index) => (
           <div
             key={message._id}
-            className={`chat ${message.senderId === authUser._id ? "chat-end" : "chat-start"}`}
-            ref={messageEndRef}
+            className={`chat ${
+              message.senderId === authUser._id ? "chat-end" : "chat-start"
+            } animate-in slide-in-from-bottom-4 duration-300`}
+            style={{ animationDelay: `${index * 50}ms` }}
+            ref={index === messages.length - 1 ? messageEndRef : null}
           >
-            <div className=" chat-image avatar">
-              <div className="size-10 rounded-full border">
+            <div className="chat-image avatar">
+              <div className="size-12 rounded-full border-2 border-primary/20 shadow-lg hover:scale-105 transition-transform duration-200">
                 <img
                   src={
                     message.senderId === authUser._id
@@ -63,23 +66,30 @@ const ChatContainer = () => {
                       : selectedUser.profilePic || "/avatar.png"
                   }
                   alt="profile pic"
+                  className="rounded-full object-cover"
                 />
               </div>
             </div>
-            <div className="chat-header mb-1">
-              <time className="text-xs opacity-50 ml-1">
+            <div className="chat-header mb-2">
+              <time className="text-xs opacity-60 ml-1 font-medium">
                 {formatMessageTime(message.createdAt)}
               </time>
             </div>
-            <div className="chat-bubble flex flex-col">
+            <div className={`chat-bubble flex flex-col shadow-lg border backdrop-blur-sm
+              ${message.senderId === authUser._id 
+                ? "bg-primary text-primary-content border-primary/20" 
+                : "bg-base-200/80 border-base-300/50"
+              }`}>
               {message.image && (
                 <img
                   src={message.image}
                   alt="Attachment"
-                  className="sm:max-w-[200px] rounded-md mb-2"
+                  className="sm:max-w-[250px] rounded-xl mb-3 shadow-md hover:scale-105 transition-transform duration-300 cursor-pointer"
                 />
               )}
-              {message.text && <p>{message.text}</p>}
+              {message.text && (
+                <p className="leading-relaxed break-words">{message.text}</p>
+              )}
             </div>
           </div>
         ))}
@@ -89,4 +99,5 @@ const ChatContainer = () => {
     </div>
   );
 };
+
 export default ChatContainer;
